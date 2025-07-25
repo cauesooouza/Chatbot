@@ -1,0 +1,36 @@
+import { Repository } from "typeorm";
+import { User } from "./user.entity.js";
+import { CreateUserInput } from "./user.schema.js";
+import { GenericServiceError } from "../../errors/GenericServiceError.js";
+import { Password } from "../../utils/Password.js";
+
+export class UserService {
+    constructor(private userRepository: Repository<User>) { }
+
+    async create(userInput: CreateUserInput): Promise<Omit<User, 'password'>> {
+        const existingUser = await this.userRepository.findOneBy({ email: userInput.email })
+
+        if (existingUser) throw new GenericServiceError(`User already exist`, 409);
+
+        userInput.password = await Password.hashPassword(userInput.password);
+
+        const newUser = this.userRepository.create(userInput);
+        const savedUser = await this.userRepository.save(newUser);
+
+        const { password, ...userWithoutPwd } = savedUser;
+        return userWithoutPwd;
+    }
+
+    async getAll(): Promise<User[]> {
+        return await this.userRepository.find();
+    }
+
+    async getByEmail(email: string): Promise<User> {
+        const user = await this.userRepository.findOneBy({ email });
+
+        if (!user) throw new GenericServiceError(`User email ${email} not found`, 404);
+
+        return user;
+
+    }
+}
