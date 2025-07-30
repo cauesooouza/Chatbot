@@ -6,7 +6,8 @@ export const createLeadSchema = z.object({
     lastName: z.string().optional(),
     isBot: z.boolean(),
     username: z.string().optional(),
-    languageCode: z.string()
+    languageCode: z.string(),
+    permission: z.string()
 })
 
 export const updateLeadSchema = z.object({

@@ -4,7 +4,7 @@ import { LeadService } from "./lead.service.js";
 import { CreateLeadInput, UpdateLeadInput } from "./lead.schema.js";
 import { QueryFailedError } from "typeorm";
 import { ParamsId } from "../../utils/types.js";
-import { GenericServiceError } from "../../errors/GenericServiceError.js";
+import { GenericError } from "../../errors/GenericError.js"
 
 const leadService = new LeadService(leadRepository);
 
@@ -26,7 +26,7 @@ export class LeadController {
                 return;
             }
 
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,
@@ -56,7 +56,7 @@ export class LeadController {
             res.status(200).json(lead);
 
         } catch (error) {
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,
@@ -77,7 +77,7 @@ export class LeadController {
             res.status(200).json(lead);
 
         } catch (error) {
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,
@@ -97,7 +97,7 @@ export class LeadController {
             res.status(204).json(lead);
 
         } catch (error) {
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,
