@@ -4,7 +4,7 @@ import { LeadService } from "./lead.service.js";
 import { CreateLeadInput, UpdateLeadInput } from "./lead.schema.js";
 import { QueryFailedError } from "typeorm";
 import { ParamsId } from "../../utils/types.js";
-import { GenericError } from "../../errors/GenericError.js"
+import { GenericError, HttpStatus } from "../../errors/GenericError.js"
 
 const leadService = new LeadService(leadRepository);
 
@@ -13,16 +13,16 @@ export class LeadController {
         try {
             const leadInput = req.body;
             const newLead = await leadService.create(leadInput);
-            res.status(201).json(newLead);
+            res.status(HttpStatus.CREATED).json(newLead);
 
         } catch (error) {
             if (error instanceof QueryFailedError) {
                 const errorMsg = {
-                    statusCode: 400,
+                    statusCode: HttpStatus.BAD_REQUEST,
                     messageError: error.message
                 }
 
-                res.status(400).json(errorMsg);
+                res.status(HttpStatus.BAD_REQUEST).json(errorMsg);
                 return;
             }
 
@@ -36,16 +36,18 @@ export class LeadController {
                 return;
             }
 
-            res.status(500).json({ statusCode: 500, messageError: "Internal server error" });
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 
     async get(req: Request, res: Response): Promise<void> {
         try {
             const leads = await leadService.getAll();
-            res.status(200).json(leads);
+            res.status(HttpStatus.OK).json(leads);
         } catch (error) {
-            res.status(500).json({ statusCode: 500, messageError: "Internal server error" });
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 
@@ -53,7 +55,7 @@ export class LeadController {
         try {
             const { id } = req.params;
             const lead = await leadService.getById(Number(id))
-            res.status(200).json(lead);
+            res.status(HttpStatus.OK).json(lead);
 
         } catch (error) {
             if (error instanceof GenericError) {
@@ -66,7 +68,8 @@ export class LeadController {
                 return;
             }
 
-            res.status(500).json({ statusCode: 500, error })
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 
@@ -74,7 +77,7 @@ export class LeadController {
         try {
             const { id, lastInteraction } = req.body;
             const lead = await leadService.updateInteraction({ id, lastInteraction });
-            res.status(200).json(lead);
+            res.status(HttpStatus.OK).json(lead);
 
         } catch (error) {
             if (error instanceof GenericError) {
@@ -86,7 +89,8 @@ export class LeadController {
 
                 return;
             }
-            res.status(500).json({ statusCode: 500, error })
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 
@@ -94,7 +98,7 @@ export class LeadController {
         try {
             const { id } = req.params;
             const lead = await leadService.delete(id);
-            res.status(204).json(lead);
+            res.status(HttpStatus.NO_CONTENT).json(lead);
 
         } catch (error) {
             if (error instanceof GenericError) {
@@ -107,7 +111,8 @@ export class LeadController {
                 return;
             }
 
-            res.status(500).json({ statusCode: 500, error })
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 }
