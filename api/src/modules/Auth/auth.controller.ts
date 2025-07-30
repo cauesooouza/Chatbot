@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service.js";
 import { LoginInput } from "./auth.schema.js";
-import { GenericServiceError } from "../../errors/GenericServiceError.js";
+import { GenericError } from "../../errors/GenericError.js";
 
 const authService = new AuthService();
 
@@ -13,7 +13,7 @@ export class AuthController {
             res.setHeader("Authorization", `Bearer ${token}`);
             res.status(200).json({ token });
         } catch (error) {
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,

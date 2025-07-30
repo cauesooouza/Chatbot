@@ -3,9 +3,9 @@ import { Password } from "../../utils/Password.js";
 import { config } from "../../config/config.js";
 import jwt from 'jsonwebtoken';
 import { AppDataSource } from "../../data/data-source.js";
-import { GenericServiceError } from "../../errors/GenericServiceError.js";
+import { GenericError } from "../../errors/GenericError.js";
 
-const activeSession = new Set<string>();
+const activeSession = new Map<string, string>();
 
 export class AuthService {
     async login(email: string, password: string): Promise<string> {
@@ -16,27 +16,30 @@ export class AuthService {
             .where("user.email = :email", { email })
             .getOne();
 
-        if (!user) throw new GenericServiceError("Invalid email or password", 401);
+        if (!user) throw new GenericError("Invalid email or password", 401);
 
         const isValid = await Password.verifyPassword(password, user.password);
 
-        if (!isValid) throw new GenericServiceError("Invalid email or password", 401);
+        if (!isValid) throw new GenericError("Invalid email or password", 401);
 
-        const token = jwt.sign({ userId: user.id }, config.apiSecret, { expiresIn: "1h" });
-        activeSession.add(token);
+        if (activeSession.has(user.id)) return activeSession.get(user.id)!;
+
+        const token = jwt.sign({ userId: user.id }, config.apiSecret, { expiresIn: "6h" });
+        activeSession.set(user.id, token);
         return token;
     }
 
     async logout(token: string): Promise<boolean> {
-        if (await AuthService.isSessionActive(token)) {
-            activeSession.delete(token);
-            return true;
-        }
+        for (const [userId, sessionToken] of activeSession)
+            if (sessionToken === token) {
+                activeSession.delete(userId);
+                return true;
+            }
 
         return false;
     }
 
     static async isSessionActive(token: string): Promise<boolean> {
-        return activeSession.has(token);
+        return Array.from(activeSession.values()).includes(token);
     }
 }
