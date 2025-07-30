@@ -3,7 +3,8 @@ import { z } from 'zod';
 export const createUserSchema = z.object({
     name: z.string(),
     email: z.string().email(),
-    password: z.string()
+    password: z.string(),
+    permission: z.string()
 })
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;

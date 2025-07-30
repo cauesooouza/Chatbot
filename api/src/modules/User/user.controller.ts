@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { userRepository } from "./user.repository.js";
 import { CreateUserInput } from "./user.schema.js";
 import { UserService } from "./user.service.js";
-import { GenericServiceError } from "../../errors/GenericServiceError.js";
+import { GenericError } from "../../errors/GenericError.js";
 import { QueryFailedError } from "typeorm";
 import { EmailQuery } from "../../utils/types.js";
 
@@ -25,7 +25,7 @@ export class UserController {
                 return;
             }
 
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,
@@ -54,7 +54,7 @@ export class UserController {
             const user = await userService.getByEmail(email);
             res.status(200).json(user);
         } catch (error) {
-            if (error instanceof GenericServiceError) {
+            if (error instanceof GenericError) {
                 res.status(error.statusCode)
                     .json({
                         statusCode: error.statusCode,
