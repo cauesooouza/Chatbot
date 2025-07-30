@@ -1,9 +1,8 @@
 import { Repository } from "typeorm";
 import { User } from "./user.entity.js";
 import { CreateUserInput } from "./user.schema.js";
-import { GenericError } from "../../errors/GenericError.js";
+import { GenericError, HttpStatus } from "../../errors/GenericError.js";
 import { Password } from "../../utils/Password.js";
-import { config } from "../../config/config.js";
 
 export class UserService {
     constructor(private userRepository: Repository<User>) { }
@@ -11,7 +10,7 @@ export class UserService {
     async create(userInput: CreateUserInput): Promise<Omit<User, 'password'>> {
         const existingUser = await this.userRepository.findOneBy({ email: userInput.email })
 
-        if (existingUser) throw new GenericError(`User already exist`, 409);
+        if (existingUser) throw new GenericError(`User already exist`, HttpStatus.CONFLICT);
 
         userInput.password = await Password.hashPassword(userInput.password);
 
@@ -29,7 +28,7 @@ export class UserService {
     async getByEmail(email: string): Promise<User> {
         const user = await this.userRepository.findOneBy({ email });
 
-        if (!user) throw new GenericError(`User email ${email} not found`, 404);
+        if (!user) throw new GenericError(`User email ${email} not found`, HttpStatus.NOT_FOUND);
 
         return user;
 

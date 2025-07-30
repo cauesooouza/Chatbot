@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { userRepository } from "./user.repository.js";
 import { CreateUserInput } from "./user.schema.js";
 import { UserService } from "./user.service.js";
-import { GenericError } from "../../errors/GenericError.js";
+import { GenericError, HttpStatus } from "../../errors/GenericError.js";
 import { QueryFailedError } from "typeorm";
 import { EmailQuery } from "../../utils/types.js";
 
@@ -13,15 +13,15 @@ export class UserController {
         try {
             const userInput = req.body;
             const newUser = await userService.create(userInput);
-            res.status(201).json(newUser);
+            res.status(HttpStatus.CREATED).json(newUser);
         } catch (error) {
             if (error instanceof QueryFailedError) {
                 const errorMsg = {
-                    statusCode: 400,
+                    statusCode: HttpStatus.BAD_REQUEST,
                     messageError: error.message
                 }
 
-                res.status(400).json(errorMsg);
+                res.status(HttpStatus.BAD_REQUEST).json(errorMsg);
                 return;
             }
 
@@ -35,16 +35,18 @@ export class UserController {
                 return;
             }
 
-            res.status(500).json({ statusCode: 500, messageError: "Internal server error" });
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 
     async get(req: Request, res: Response): Promise<void> {
         try {
             const users = await userService.getAll();
-            res.status(200).json(users);
+            res.status(HttpStatus.OK).json(users);
         } catch (error) {
-            res.status(500).json({ statusCode: 500, messageError: "Internal server error" });
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 
@@ -52,7 +54,7 @@ export class UserController {
         try {
             const { email } = req.query;
             const user = await userService.getByEmail(email);
-            res.status(200).json(user);
+            res.status(HttpStatus.OK).json(user);
         } catch (error) {
             if (error instanceof GenericError) {
                 res.status(error.statusCode)
@@ -64,7 +66,8 @@ export class UserController {
                 return;
             }
 
-            res.status(500).json({ statusCode: 500, error })
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
     }
 }
