@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { LeadController } from "../modules/Lead/lead.controller.js";
-import { validateInput } from "../middleware/validateInput.js";
+import { validateInput } from "../middleware/validations/validateInput.js";
 import { createLeadSchema, updateLeadSchema } from "../modules/Lead/lead.schema.js";
-import { sessionAuth } from "../middleware/sessionAuth.js";
-import { validatePermission } from "../middleware/validatePermission.js";
+import { sessionAuth } from "../middleware/auth/sessionAuth.js";
+import { validatePermission } from "../middleware/validations/validatePermission.js";
 
 const leadController = new LeadController();
 const router = Router();
