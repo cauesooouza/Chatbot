@@ -3,7 +3,7 @@ import { Password } from "../../utils/Password.js";
 import { config } from "../../config/config.js";
 import jwt from 'jsonwebtoken';
 import { AppDataSource } from "../../data/data-source.js";
-import { GenericError } from "../../errors/GenericError.js";
+import { GenericError } from "../../middleware/errors/GenericError.js";
 
 const activeSession = new Map<string, string>();
 
@@ -39,7 +39,10 @@ export class AuthService {
         return false;
     }
 
-    static async isSessionActive(token: string): Promise<boolean> {
-        return Array.from(activeSession.values()).includes(token);
+    static isSessionActive(token: string): boolean {
+        for (const sessionToken of activeSession.values()) {
+            if (sessionToken === token) return true;
+        }
+        return false;
     }
 }

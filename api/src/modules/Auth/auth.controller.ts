@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "./auth.service.js";
 import { LoginInput } from "./auth.schema.js";
-import { GenericError } from "../../errors/GenericError.js";
+import { GenericError } from "../../middleware/errors/GenericError.js";
 
 const authService = new AuthService();
 
