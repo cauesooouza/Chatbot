@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { config } from "../config/config.js";
+import { config } from "../../config/config.js";
 import { GenericError, HttpStatus } from "../errors/GenericError.js";
 
 export const validatePermission = (req: Request, _res: Response, next: NextFunction) => {
