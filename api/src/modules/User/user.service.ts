@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { User } from "./user.entity.js";
 import { CreateUserInput } from "./user.schema.js";
-import { GenericError, HttpStatus } from "../../errors/GenericError.js";
+import { GenericError, HttpStatus } from "../../middleware/errors/GenericError.js";
 import { Password } from "../../utils/Password.js";
 
 export class UserService {

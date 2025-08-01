@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { userRepository } from "./user.repository.js";
 import { CreateUserInput } from "./user.schema.js";
 import { UserService } from "./user.service.js";
-import { GenericError, HttpStatus } from "../../errors/GenericError.js";
+import { GenericError, HttpStatus } from "../../middleware/errors/GenericError.js";
 import { QueryFailedError } from "typeorm";
 import { EmailQuery } from "../../utils/types.js";
 
@@ -45,6 +45,16 @@ export class UserController {
             const users = await userService.getAll();
             res.status(HttpStatus.OK).json(users);
         } catch (error) {
+            if (error instanceof GenericError) {
+                res.status(error.statusCode)
+                    .json({
+                        statusCode: error.statusCode,
+                        messageError: error.message,
+                    });
+
+                return;
+            }
+
             res.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .json({ statusCode: HttpStatus.INTERNAL_SERVER_ERROR, messageError: "Internal server error" });
         }
