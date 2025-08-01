@@ -1,4 +1,4 @@
-interface Config {
+interface IConfig {
     apiPort: number,
     apiSecret: string,
     apiPermission: string
@@ -6,20 +6,26 @@ interface Config {
         port: number,
         username: string,
         password: string,
-        name: string
+        name: string,
+        type: string,
+        host: string
     }
-    development: boolean
+    logging: boolean,
+    synchronize: boolean
 }
 
-export const config: Config = {
-    apiPort: Number(process.env.API_PORT) || 5432,
+export const config: IConfig = {
+    apiPort: Number(process.env.API_PORT),
     apiSecret: String(process.env.API_SECRET),
     apiPermission: String(process.env.API_PERMISSION),
     db: {
-        port: Number(process.env.DATABASE_PORT) || 3000,
+        type: String(process.env.DATABASE_TYPE),
+        host: String(process.env.DATABASE_HOST),
+        port: Number(process.env.DATABASE_PORT),
         username: String(process.env.DATABASE_USERNAME),
         password: String(process.env.DATABASE_PASSWORD),
-        name: String(process.env.DATABASE_NAME)
+        name: String(process.env.DATABASE_NAME),
     },
-    development: process.env.NODE_ENV === "development",
+    logging: process.env.NODE_ENV === "development",
+    synchronize: process.env.NODE_ENV === "development"
 }
