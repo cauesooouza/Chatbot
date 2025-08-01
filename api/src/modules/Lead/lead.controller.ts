@@ -4,7 +4,7 @@ import { LeadService } from "./lead.service.js";
 import { CreateLeadInput, UpdateLeadInput } from "./lead.schema.js";
 import { QueryFailedError } from "typeorm";
 import { ParamsId } from "../../utils/types.js";
-import { GenericError, HttpStatus } from "../../errors/GenericError.js"
+import { GenericError, HttpStatus } from "../../middleware/errors/GenericError.js"
 
 const leadService = new LeadService(leadRepository);
 

@@ -1,7 +1,7 @@
 import { DeleteResult, Repository } from "typeorm";
 import { CreateLeadInput, UpdateLeadInput } from "./lead.schema.js";
 import { Lead } from "./lead.entity.js";
-import { GenericError, HttpStatus } from "../../errors/GenericError.js";
+import { GenericError, HttpStatus } from "../../middleware/errors/GenericError.js";
 
 export class LeadService {
     constructor(private leadRepository: Repository<Lead>) { }
