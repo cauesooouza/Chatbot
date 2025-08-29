@@ -9,7 +9,6 @@ const leadController = new LeadController();
 const router = Router();
 
 router.post('/new', validateInput(createLeadSchema), validatePermission, leadController.create);
-// router.get('/dashboard', )
 router.get('/all', sessionAuth, leadController.get);
 router.get('/:id', sessionAuth, leadController.getById);
 router.patch('/update', validateInput(updateLeadSchema), validatePermission, leadController.update);
