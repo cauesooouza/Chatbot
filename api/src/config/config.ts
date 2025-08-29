@@ -10,8 +10,6 @@ interface IConfig {
         type: string,
         host: string
     }
-    logging: boolean,
-    synchronize: boolean
 }
 
 export const config: IConfig = {
@@ -25,7 +23,5 @@ export const config: IConfig = {
         username: String(process.env.DATABASE_USERNAME),
         password: String(process.env.DATABASE_PASSWORD),
         name: String(process.env.DATABASE_NAME),
-    },
-    logging: process.env.NODE_ENV === "development",
-    synchronize: process.env.NODE_ENV === "development"
+    }
 }

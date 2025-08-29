@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { GenericError, HttpStatus } from "./GenericError.js";
 import { QueryFailedError } from "typeorm";
 

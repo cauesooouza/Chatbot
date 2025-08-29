@@ -23,9 +23,9 @@ export class Lead {
     @Column({ type: "varchar", nullable: true })
     lastInteraction: string;
 
-    @CreateDateColumn({ type: "timestamp" })
+    @CreateDateColumn({ type: "datetime" })
     createdAt: Date;
 
-    @UpdateDateColumn({ type: "timestamp" })
+    @UpdateDateColumn({ type: "datetime" })
     updateAt: Date;
 } 
